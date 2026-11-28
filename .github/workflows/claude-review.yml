@@ -1,0 +1,24 @@
+# Synced from turple-dog/engineering-standards; edit it there, not here.
+# Runs the org's shared Claude review (turple-dog/.github) on every PR.
+name: Claude review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths-ignore: ["**/*.md"]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  review:
+    uses: turple-dog/.github/.github/workflows/claude-review.yml@1f539acdc0e3e8fd9e567f3d72d8145b9d21b9b0 # main
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
